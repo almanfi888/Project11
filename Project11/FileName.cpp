@@ -1,57 +1,43 @@
 ﻿#include <iostream>
 using namespace std;
-class sjx {
-private:
-	double d;
-	double h;
+
+class Bclass {
 public:
-
-	sjx() {
-		d = 0;
-		h = 0;
-	}
-	sjx(double x, double y) :d(x), h(y) {}
-	bool operator>(const sjx& a) {
-		return d
-			* h > a.d * a.h;
-
-
-	}
-	bool operator>=(const sjx& a) {
-		return d * h >= a.d * a.h;
-
-	}
-	bool operator<(const sjx& a) {
-		return d * h < a.d * a.h;
-
-	}
-	bool operator<=(const sjx& a) {
-		return d * h <= a.d * a.h;
-
-	}
-	bool operator==(const sjx& a) {
-		return d * h == a.d * a.h;
-
-	}
-	bool operator!=(const sjx& a) {
-		return d * h != a.d * a.h;
-
+	Bclass(int i, int j) {
+		x = i;
+		y = j;
 	}
 
+	int fun() {
+		return 0;
+	}
+
+protected:
+	int x, y;
 };
 
+class Iclass : public Bclass {
+private:
+	int z;
+public:
+	Iclass(int i, int j, int k) : Bclass(i, j) {
+		z = k;
+	}
+
+	int fun() {
+		return (x + y + z) / 3;
+	}
+};
+
+
 int main() {
+	Iclass obj(2, 4, 10);
+	Bclass p1 = obj;
 
-
-	sjx s1(2, 6);
-	sjx s2(3, 5);
-
-	if (s1 > s2)  cout << "s1 > s2 成立" << endl;
-	if (s1 >= s2) cout << "s1 >= s2 成立" << endl;
-	if (s1 < s2)  cout << "s1 < s2 成立" << endl;
-	if (s1 <= s2) cout << "s1 <= s2 成立" << endl;
-	if (s1 == s2) cout << "s1 == s2 成立" << endl;
-	if (s1 != s2) cout << "s1 != s2 成立" << endl;
+	cout << p1.fun() << endl;
 
 	return 0;
+
+
+
 }
