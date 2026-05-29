@@ -1,47 +1,53 @@
 ﻿#include <iostream>
 using namespace std;
-class vehicle {
+class Building {
 protected:
-	int wheels;
-	double weight;
+	int ceng;
+	int fangjian;
 public:
-	vehicle(int w, double ww) :wheels(w), weight(ww) {}
+	Building(int c,int cc):ceng(c),fangjian(cc){}
 };
-class car :private vehicle {
+class Housing :public Building {
 private:
-	int passenger_load;
+	int woshi;
+	int yushi;
 public:
-	car(int w, double ww, int p) :vehicle(w, ww), passenger_load(p) {}
-	void show() {
-		cout << "car" << endl;
-		cout << "wheels:" << wheels << endl;
-		cout << "weight:" << weight << endl;
-		cout << "passenger_load:" << passenger_load << endl;
-	}
-};
-class truck :private vehicle {
-private:
-	int passenger_load;
-	double payload;
-public:
-	truck(int w, double ww, int p, double pp) :vehicle(w, ww), passenger_load(p), payload(pp) {}
-	void show() {
-		cout << "truck" << endl;
-		cout << "wheels:" << wheels << endl;
-		cout << "weight:" << weight << endl;
-		cout << "passenger_load:" << passenger_load << endl;
-		cout << "payload:" << payload << endl;
+	Housing(int c, int cc, int w, int ww):Building(c, cc), woshi(w), yushi(ww){}
 
+	void show() {
+		cout << "层数：" << ceng<< endl;
+		cout << "房间数：" << fangjian<< endl;
+		cout << "卧室数：" << woshi<< endl;
+		cout << "浴室数：" << yushi<< endl;
 	}
 };
+class Office :public Building {
+private:
+	int miehuo;
+	int phone;
+public:
+	Office(int c,int cc,int m,int mm):Building(c,cc),miehuo(m),phone(mm){}
+	void show() {
+		cout << "层数：" << ceng<< endl;
+		cout << "房间数：" << fangjian<< endl;
+		cout << "灭火器数：" << miehuo<< endl;
+		cout << "电话数：" << phone<< endl;
+	}
+};
+
 int main() {
-	car myCar(4, 1500, 5);
-	truck myTruck(6, 8000, 3, 20000);
+	Housing house(6, 12, 8, 4);
+	cout << "===== 住宅楼信息 =====" << endl;
+	house.show();
 
-	myCar.show();
-	myTruck.show();
+	cout << endl;
+
+	// 创建办公楼对象
+	Office office(10, 30, 20, 50);
+	cout << "===== 办公楼信息 =====" << endl;
+	office.show();
+
 	return 0;
-
 }
 
 
