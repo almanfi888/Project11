@@ -1,86 +1,45 @@
 ﻿#include <iostream>
-#include <string>
 using namespace std;
-class person {
+class vehicle {
 protected:
-
-	char* xm;
-	char* xb;
-	int age;
+	int wheels;
+	double weight;
 public:
-	friend ostream& operator<<(ostream& out, person& s) {
-		out << "姓名:" << s.xm << "性别：" << s.xb << "年龄:" << s.age;
-		return out;
-	}
-	friend istream& operator>>(istream& in, person& s) {
-		char name[20];
-		cout << "请输入姓名：";
-		in >> name;
-		s.xm = new char[strlen(name) + 1];
-		strcpy_s(s.xm, strlen(name) + 1, name);		char sex[20];
-		cout << "请输入性别：";
-		in >> sex;
-		s.xb = new char[strlen(sex) + 1];
-		strcpy_s(s.xb, strlen(sex) + 1, sex);
-		cout << "请输入年龄：";
-		in >> s.age;
-		return in;
-	}
-
-	~person() {
-		delete[] xm;
-		delete[] xb;
-	}
-
+	vehicle(int w, double ww) :wheels(w), weight(ww) {}
 };
-class student :public person {
+class car :private vehicle {
 private:
-	int xuehao;
-	int banji;
-	char* zhuanye;
-	int rxcj;
+	int passenger_load;
 public:
-	friend istream& operator>>(istream& in, student& s) {
-		char name[20];
-		cout << "请输入姓名：";
-		in >> name;
-		s.xm = new char[strlen(name) + 1];
-		strcpy_s(s.xm, strlen(name) + 1, name);		char sex[20];
-		cout << "请输入性别：";
-		in >> sex;
-		s.xb = new char[strlen(sex) + 1];
-		strcpy_s(s.xb, strlen(sex) + 1, sex);
-		cout << "请输入年龄：";
-		in >> s.age;
-		cout << "请输入学号：";
-		cin >> s.xuehao;
-		cout << "请输入班级：";
-		cin >> s.banji;
-		cout << "请输入专业：";
-		char zy[20];
-		cin >> zy;
-		s.zhuanye = new char[strlen(zy) + 1];
-		strcpy_s(s.zhuanye, strlen(zy) + 1, zy);
-		cout << "请输入入学成绩：";
-		cin >> s.rxcj;
-		return in;
+	car(int w, double ww, int p) :vehicle(w, ww), passenger_load(p) {}
+	void show() {
+		cout << "car" << endl;
+		cout << "wheels:" << wheels << endl;
+		cout << "weight:" << weight << endl;
+		cout << "passenger_load:" << passenger_load << endl;
 	}
-	friend ostream& operator<<(ostream& out, student& s) {
-		out << "姓名:" << s.xm << "性别：" << s.xb << "年龄:" << s.age;
-		out << "学号：" << s.xuehao << "班级：" << s.banji << "专业：" << s.zhuanye << "入学成绩：" << s.rxcj;
-		return out;
-	}
-	~student() {
-		delete[] zhuanye;
+};
+class truck :private vehicle {
+private:
+	int passenger_load;
+	double payload;
+public:
+	truck(int w, double ww, int p, double pp) :vehicle(w, ww), passenger_load(p), payload(pp) {}
+	void show() {
+		cout << "truck" << endl;
+		cout << "wheels:" << wheels << endl;
+		cout << "weight:" << weight << endl;
+		cout << "passenger_load:" << passenger_load << endl;
+		cout << "payload:" << payload << endl;
+
 	}
 };
 int main() {
-	student s;
+	car myCar(4, 1500, 5);
+	truck myTruck(6, 8000, 3, 20000);
 
-	cin >> s;
-
-
-	cout << s;
+	myCar.show();
+	myTruck.show();
 	return 0;
 
 }
