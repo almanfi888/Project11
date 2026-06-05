@@ -1,92 +1,73 @@
 ﻿#include <iostream>
 #include <string>
+#include <iomanip>
 using namespace std;
-class animal {
+const double pi = 3.14;
+class shape {
 public:
-	int height;
-	int weight;
-	char* sex;
-	animal() {
-		height = 0; weight = 0;
-		sex = new char[1];
-		sex[0] = '\0';
+	double x, y;
+	shape() :x(0), y(0) {}
+
+
+};
+class yuan :public shape {
+private:
+	double r;
+public:
+
+	friend ostream& operator<<(ostream& out, yuan& s) {
+		out << fixed << setprecision(2) << s.perimeter() << " ";
+		return out;
 	}
 
-	animal(int a, int w, const char* s) {
-		height = a;
-		weight = w;
-		sex = new char[strlen(s) + 1];
-		strcpy_s(sex, strlen(s) + 1, s);
+	friend istream& operator>>(istream& in, yuan& s) {
+		in >> s.r;
+		return in;
+	}
 
+	double perimeter() {
+		return 2 * pi * r;
 	}
-	~animal() {
-		delete[] sex;
+};
+class cfx :public shape {
+private:
+	double a, b;
+public:
+	friend ostream& operator<<(ostream& out, cfx& s) {
+		out << fixed << setprecision(2) << s.perimeter() << " ";
+		return out;
 	}
-	void show_animal() {
-		cout << "height:" << height << endl;
-		cout << "weight:" << weight << endl;
-		cout << "sex:" << sex << endl;
+	friend istream& operator>>(istream& in, cfx& s) {
+		in >> s.a >> s.b;
+		return in;
+	}
+
+	double perimeter() {
+		return 2 * a + 2 * b;
 	}
 
 };
-
-class ter_animal :virtual public animal {
+class sjx :public shape {
+private:
+	double a, b, c;
 public:
-	int running_speed;
-	ter_animal(int a, int w, const char* s, int r) :animal(a, w, s) {
-		running_speed = r;
-
+	friend ostream& operator<<(ostream& out, sjx& s) {
+		out << fixed << setprecision(2) << s.perimeter()<<" ";
+		return out;
 	}
-	ter_animal()
-	{
-		running_speed = 0;
+	friend istream& operator>>(istream& in, sjx& s) {
+		in >> s.a >> s.b >> s.c;
+		return in;
 	}
-	void show_ter() {
-		show_animal();
-
-		cout << "running_speed:" << running_speed << endl;
-	}
-};
-class aqu_animal :virtual public animal {
-
-public:
-	int swiming_speed;
-	aqu_animal(int a, int w, const char* s, int r) :animal(a, w, s) {
-		swiming_speed = r;
-	}
-	aqu_animal()
-	{
-		swiming_speed = 0;
-	}
-	void show_aqu() {
-		show_animal();
-		cout << "swimming_speed:" << swiming_speed << endl;
-	}
-};
-class amp_animal :public ter_animal, public aqu_animal {
-public:
-	amp_animal(int a, int w, const char* s, int run, int swim) :animal(a, w, s) {
-		running_speed = run;
-		swiming_speed = swim;
-
-	}
-	void show_all() {
-		show_animal();
-
-		cout << "running_speed:" << running_speed << endl;
-		cout << "swimming_speed:" << swiming_speed << endl;
-	}
+	double perimeter() { return a + b + c; }
 };
 int main() {
-	int h, w, run, swim;
-	char sex[10];
-	cin >> h >> w >> sex >> run >> swim;
-
-	amp_animal amp(h, w, sex, run, swim);
-	amp.show_all();
-
+	yuan a;
+	sjx b;
+	cfx c;
+	cin >> a >> b >> c;
+	cout << a << b << c;
 	return 0;
-
 }
 
 
