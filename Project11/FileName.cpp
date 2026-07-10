@@ -1,107 +1,78 @@
-﻿#include<iostream>
+﻿#include <iostream>
+#include <cmath>
+#include <iomanip>
+
 using namespace std;
-class fraction {
+
+class Quaternion { // 顺便把类名改成了更标准的 Quaternion
 private:
-	int zi;
+	double w, x, y, z; // 标准的四元数命名：w是实部，x,y,z是虚部
 
-	int mu;
 public:
-	fraction() {
-		zi = 0; mu = 1;
+	// 构造函数（使用 double 类型，避免小数被截断）
+	Quaternion(double w = 0.0, double x = 0.0, double y = 0.0, double z = 0.0)
+		: w(w), x(x), y(y), z(z) {}
+
+	// Getter 函数
+	double getW() const { return w; }
+	double getX() const { return x; }
+	double getY() const { return y; }
+	double getZ() const { return z; }
+
+	double norm_s()const {
+		return w * w + x * x + y * y + z * z;
 	}
-	fraction(int a, int b) {
-		if (b < 0) {
-			a = -a;
-			b = -b;
+	double norm()const {
+		return sqrt(norm_s());
+	}
+	Quaternion normalized()const {
+		double n = norm();
+		if (n == 0)return Quaternion(0, 0, 0, 0);
+		return Quaternion(w / n, x / n, y / n, z / n);
+	}
+
+
+	// 重载加法 (+)
+	friend Quaternion operator +(const Quaternion& m, const Quaternion& n) {
+		return Quaternion(m.w + n.w, m.x + n.x, m.y + n.y, m.z + n.z);
+	}
+
+	// 重载减法 (-)
+	friend Quaternion operator -(const Quaternion& m, const Quaternion& n) {
+		return Quaternion(m.w - n.w, m.x - n.x, m.y - n.y, m.z - n.z);
+	}
+
+	// 重载乘法 (*)
+	friend Quaternion operator *(const Quaternion& m, const Quaternion& n) {
+		double resW = m.w * n.w - m.x * n.x - m.y * n.y - m.z * n.z;
+		double resX = m.w * n.x + m.x * n.w + m.y * n.z - m.z * n.y;
+		double resY = m.w * n.y - m.x * n.z + m.y * n.w + m.z * n.x;
+		double resZ = m.w * n.z + m.x * n.y - m.y * n.x + m.z * n.w;
+		return Quaternion(resW, resX, resY, resZ);
+	}
+
+	// 重载除法 (/)
+	friend Quaternion operator /(const Quaternion& m, const Quaternion& n) {
+		double norm_sq = n.norm_s();
+		if (norm_sq == 0.0) {
+			cout << "cuowu,bunengwei0" << endl;
+			return Quaternion(0, 0, 0, 0);
 		}
-		if (b == 0) {
-			cout << "错误：分母不能为0，已重置为1" << endl;
-			b = 1;
-		}
-		int gcd0 = gcd(a, b);
-
-		zi = a / gcd0;
-		mu = b / gcd0;
-
+		Quaternion n_inverse(n.w / norm_sq, -n.x / norm_sq, -n.y / norm_sq, -n.z / norm_sq);
+		return m * n_inverse;
 	}
-	int gcd(int a, int b) {
-		a = abs(a);
-		b = abs(b);
-
-		while (b != 0) {
-			int temp = a % b;
-			a = b;
-			b = temp;
-		}
-		return a;  // 最终a即为GCD
+	friend ostream& operator <<(ostream& out, const Quaternion& s) {
+		out << fixed << setprecision(4); // 保留4位小数，看起来更整洁
+		out << "(" << s.w << ", " << s.x << ", " << s.y << ", " << s.z << ")";
+		return out;
 	}
-	int getzi()const {
-		return zi;
-	}
-	int getmu()const {
-		return mu;
-	}
-
-	friend fraction operator +(const fraction& d, const fraction& s);
-	friend fraction operator -(const fraction& a, const fraction& s);
-	friend fraction operator *(const fraction& a, const fraction& s);
-	friend fraction operator /(const fraction& d, const fraction& s);
-
-	friend	istream& operator >> (istream& in, fraction& s);
-	friend ostream& operator <<(ostream& out, fraction& s);
-
-
 };
-fraction operator+(const fraction& ok, const fraction& s) {
-	int zi1 = ok.getzi();
-	int zi2 = s.getzi();
-	int mu1 = ok.getmu();
-	int mu2 = s.getmu();
-	return fraction(zi1 * mu2 + zi2 * mu1, mu1 * mu2);
-}
-fraction operator-(const fraction& ok, const fraction& s) {
-	int zi1 = ok.getzi();
-	int zi2 = s.getzi();
-	int mu1 = ok.getmu();
-	int mu2 = s.getmu();
-	return fraction(zi1 * mu2 - zi2 * mu1, mu1 * mu2);
-}
-fraction operator*(const fraction& ok, const fraction& s) {
-	int zi1 = ok.getzi();
-	int zi2 = s.getzi();
-	int mu1 = ok.getmu();
-	int mu2 = s.getmu();
-	return fraction(zi1 * zi2, mu1 * mu2);
-}
-fraction operator/(const fraction& ok, const fraction& s) {
-	int zi1 = ok.getzi();
-	int zi2 = s.getzi();
-	int mu1 = ok.getmu();
-	int mu2 = s.getmu();
-	return fraction(zi1 * mu2, zi2 * mu1);
-}
-ostream& operator<<(ostream& out, const fraction& s) {
-	out << s.getzi() << "/" << s.getmu();
-	return out;
-}
-istream& operator>>(istream& in,   fraction& s) {
-	char a;
-	in >> s.zi >> a >> s.mu;
-	return in;
-}
 int main() {
-	fraction f1, f2;
-
-	cout << "请输入第一个分数: ";
-	cin >> f1;
-
-	cout << "请输入第二个分数: ";
-	cin >> f2;
-
-	cout << "加法结果: " << f1 + f2 << endl;
-	cout << "减法结果: " << f1 - f2 << endl;
-	cout << "乘法结果: " << f1 * f2 << endl;
-	cout << "除法结果: " << f1 / f2 << endl;
-
+	Quaternion s1(1, 5, 6, 7);
+	Quaternion s2(8, 5, 1, 3);
+	Quaternion s3;
+	s3 = s1 + s2;
+	cout << s3 << endl;
+	cout << s1 / s2 << endl;
 	return 0;
 }
