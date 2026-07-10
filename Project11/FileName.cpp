@@ -1,74 +1,107 @@
-﻿#include <iostream>
-#include<fstream>
-#include<string>
-
+﻿#include<iostream>
 using namespace std;
+class fraction {
+private:
+	int zi;
+
+	int mu;
+public:
+	fraction() {
+		zi = 0; mu = 1;
+	}
+	fraction(int a, int b) {
+		if (b < 0) {
+			a = -a;
+			b = -b;
+		}
+		if (b == 0) {
+			cout << "错误：分母不能为0，已重置为1" << endl;
+			b = 1;
+		}
+		int gcd0 = gcd(a, b);
+
+		zi = a / gcd0;
+		mu = b / gcd0;
+
+	}
+	int gcd(int a, int b) {
+		a = abs(a);
+		b = abs(b);
+
+		while (b != 0) {
+			int temp = a % b;
+			a = b;
+			b = temp;
+		}
+		return a;  // 最终a即为GCD
+	}
+	int getzi()const {
+		return zi;
+	}
+	int getmu()const {
+		return mu;
+	}
+
+	friend fraction operator +(const fraction& d, const fraction& s);
+	friend fraction operator -(const fraction& a, const fraction& s);
+	friend fraction operator *(const fraction& a, const fraction& s);
+	friend fraction operator /(const fraction& d, const fraction& s);
+
+	friend	istream& operator >> (istream& in, fraction& s);
+	friend ostream& operator <<(ostream& out, fraction& s);
 
 
-
+};
+fraction operator+(const fraction& ok, const fraction& s) {
+	int zi1 = ok.getzi();
+	int zi2 = s.getzi();
+	int mu1 = ok.getmu();
+	int mu2 = s.getmu();
+	return fraction(zi1 * mu2 + zi2 * mu1, mu1 * mu2);
+}
+fraction operator-(const fraction& ok, const fraction& s) {
+	int zi1 = ok.getzi();
+	int zi2 = s.getzi();
+	int mu1 = ok.getmu();
+	int mu2 = s.getmu();
+	return fraction(zi1 * mu2 - zi2 * mu1, mu1 * mu2);
+}
+fraction operator*(const fraction& ok, const fraction& s) {
+	int zi1 = ok.getzi();
+	int zi2 = s.getzi();
+	int mu1 = ok.getmu();
+	int mu2 = s.getmu();
+	return fraction(zi1 * zi2, mu1 * mu2);
+}
+fraction operator/(const fraction& ok, const fraction& s) {
+	int zi1 = ok.getzi();
+	int zi2 = s.getzi();
+	int mu1 = ok.getmu();
+	int mu2 = s.getmu();
+	return fraction(zi1 * mu2, zi2 * mu1);
+}
+ostream& operator<<(ostream& out, const fraction& s) {
+	out << s.getzi() << "/" << s.getmu();
+	return out;
+}
+istream& operator>>(istream& in,   fraction& s) {
+	char a;
+	in >> s.zi >> a >> s.mu;
+	return in;
+}
 int main() {
-	ofstream outFile("test.txt");
-	if (!outFile.is_open())
-	{
-		cout << "wenjianchuangjianshibai" << endl;
-		return 1;
-	}
-	int zhengshu = 1234;
-	double fudian = 88.98;
-	char zifu = 'q';
-	string zifuchuan0 = "almanfi";
-	string zifuchuan1 = "shan shao qi";
-	outFile << zhengshu << endl;
-	outFile << fudian << endl;
-	outFile << zifu << endl;
-	outFile << zifuchuan0 << endl;
+	fraction f1, f2;
 
-	outFile << zifuchuan1 << endl;
-	outFile.close();
+	cout << "请输入第一个分数: ";
+	cin >> f1;
 
+	cout << "请输入第二个分数: ";
+	cin >> f2;
 
-	ifstream inFile("test.txt");
-	if (!inFile.is_open())
-	{
-		cout << "wenjiandakaishibai" << endl;
-		return 1;
-
-	}
-
-	outFile.open("new.txt");
-	if (!outFile.is_open()) {
-		cout << "dakaishibai" << endl;
-		return 1;
-	}
-	char ch;
-	while (inFile.get(ch))
-	{
-		outFile.put(ch);
-	}
-	outFile.close();
-	inFile.close();
-
-	inFile.open("new.txt");
-
-	int readi1;
-	double readd;
-	char readc;
-	string read1, read2;
-	inFile >> readi1;
-	inFile >> readd;
-	inFile >> readc;
-	inFile.ignore();
-	getline(inFile, read1);
-	getline(inFile, read2);
-
-	inFile.close();
-	cout << readi1;
-	cout << endl << readd;
-	cout << endl << readc;
-	cout << endl << read1;
-	cout << endl;
-	cout << read2;
-	cout << endl;
+	cout << "加法结果: " << f1 + f2 << endl;
+	cout << "减法结果: " << f1 - f2 << endl;
+	cout << "乘法结果: " << f1 * f2 << endl;
+	cout << "除法结果: " << f1 / f2 << endl;
 
 	return 0;
 }
