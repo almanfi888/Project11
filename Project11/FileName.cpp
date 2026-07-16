@@ -1,78 +1,77 @@
 ﻿#include <iostream>
-#include <cmath>
-#include <iomanip>
-
 using namespace std;
 
-class Quaternion { // 顺便把类名改成了更标准的 Quaternion
+class Node {
+public:
+    int data; // 修改：建议将 date 改为 data
+    Node* next;
+
+    // 构造函数：val 默认为 0，next 默认为空
+    Node(int val = 0) {
+        data = val;
+        next = nullptr; // 建议使用 nullptr 代替 0，更现代、更安全
+    }
+};
+
+class linked_list {
 private:
-	double w, x, y, z; // 标准的四元数命名：w是实部，x,y,z是虚部
+    Node* head;
 
 public:
-	// 构造函数（使用 double 类型，避免小数被截断）
-	Quaternion(double w = 0.0, double x = 0.0, double y = 0.0, double z = 0.0)
-		: w(w), x(x), y(y), z(z) {}
+    linked_list() {
+        head = nullptr;
+    }
 
-	// Getter 函数
-	double getW() const { return w; }
-	double getX() const { return x; }
-	double getY() const { return y; }
-	double getZ() const { return z; }
+    // 析构函数：写得很好！负责释放所有内存，防止泄漏
+    ~linked_list() {
+        Node* current = head;
+        while (current != nullptr) {
+            Node* next_Node = current->next;
+            delete current;
+            current = next_Node;
+        }
+    }
 
-	double norm_s()const {
-		return w * w + x * x + y * y + z * z;
-	}
-	double norm()const {
-		return sqrt(norm_s());
-	}
-	Quaternion normalized()const {
-		double n = norm();
-		if (n == 0)return Quaternion(0, 0, 0, 0);
-		return Quaternion(w / n, x / n, y / n, z / n);
-	}
+    void append(int val) {
+        Node* newNode = new Node(val);
 
+        // 【修改点 1】如果是空链表，新节点就是头节点
+        // 原代码是 if (head = 0)，这是赋值，必须改成 == 或者 !head
+        if (head == nullptr) {
+            head = newNode;
+            return;
+        }
 
-	// 重载加法 (+)
-	friend Quaternion operator +(const Quaternion& m, const Quaternion& n) {
-		return Quaternion(m.w + n.w, m.x + n.x, m.y + n.y, m.z + n.z);
-	}
+        // 如果不是空链表，遍历到最后一个节点
+        Node* temp = head;
+        while (temp->next != nullptr) {
+            temp = temp->next;
+        }
 
-	// 重载减法 (-)
-	friend Quaternion operator -(const Quaternion& m, const Quaternion& n) {
-		return Quaternion(m.w - n.w, m.x - n.x, m.y - n.y, m.z - n.z);
-	}
+        // 【修改点 2】关键步骤：把尾节点的 next 指向新节点
+        // 原代码漏掉了这一行，导致新节点没连上去
+        temp->next = newNode;
+    }
 
-	// 重载乘法 (*)
-	friend Quaternion operator *(const Quaternion& m, const Quaternion& n) {
-		double resW = m.w * n.w - m.x * n.x - m.y * n.y - m.z * n.z;
-		double resX = m.w * n.x + m.x * n.w + m.y * n.z - m.z * n.y;
-		double resY = m.w * n.y - m.x * n.z + m.y * n.w + m.z * n.x;
-		double resZ = m.w * n.z + m.x * n.y - m.y * n.x + m.z * n.w;
-		return Quaternion(resW, resX, resY, resZ);
-	}
-
-	// 重载除法 (/)
-	friend Quaternion operator /(const Quaternion& m, const Quaternion& n) {
-		double norm_sq = n.norm_s();
-		if (norm_sq == 0.0) {
-			cout << "cuowu,bunengwei0" << endl;
-			return Quaternion(0, 0, 0, 0);
-		}
-		Quaternion n_inverse(n.w / norm_sq, -n.x / norm_sq, -n.y / norm_sq, -n.z / norm_sq);
-		return m * n_inverse;
-	}
-	friend ostream& operator <<(ostream& out, const Quaternion& s) {
-		out << fixed << setprecision(4); // 保留4位小数，看起来更整洁
-		out << "(" << s.w << ", " << s.x << ", " << s.y << ", " << s.z << ")";
-		return out;
-	}
+    void display() {
+        Node* temp = head;
+        while (temp != nullptr) {
+            cout << temp->data << " -> "; // 修改：对应 data 变量名
+            temp = temp->next;
+        }
+        cout << "NULL" << endl;
+    }
 };
+
 int main() {
-	Quaternion s1(1, 5, 6, 7);
-	Quaternion s2(8, 5, 1, 3);
-	Quaternion s3;
-	s3 = s1 + s2;
-	cout << s3 << endl;
-	cout << s1 / s2 << endl;
-	return 0;
+    linked_list myList;
+
+    myList.append(10);
+    myList.append(20);
+    myList.append(30);
+
+    // 预期输出：10 -> 20 -> 30 -> NULL
+    myList.display();
+
+    return 0;
 }
